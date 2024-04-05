@@ -52,7 +52,6 @@ function draw() {
   
   background(50)
     // Draw instructions
-    canvas = createCanvas(windowWidth, windowHeight); 
     noStroke();
     let f = 80;
     textSize(20);
