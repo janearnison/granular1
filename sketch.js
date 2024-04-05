@@ -120,7 +120,7 @@ function calculateLoop() {
 }
 
 function keyPressed() {
-    // start and stop the player with spacebar
+    // start and stop the player with the space bar
     if (key === " ") {
         if (!isPlaying) {
             initializeTone();
@@ -131,21 +131,6 @@ function keyPressed() {
             isPlaying = false;
         }
     }
-}
-
-function touchStarted() {
-    // start and stop the player with touchscreen
-     if (value === 0) {
-        if (!isPlaying) {
-            initializeTone();
-            player.start(1, loopStart);
-            isPlaying = true;
-        } else {
-            player.stop();
-            isPlaying = false;
-        }
-     }
-}
 
     // cycle through buffers and backgrounds with right or left arrow
     if (key === "ArrowRight") {
@@ -192,6 +177,3 @@ async function initializeTone() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
-
-
-
