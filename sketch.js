@@ -119,8 +119,8 @@ function calculateLoop() {
     isPlaying = true;
 }
 
-function touchStarted() {
-    // start and stop the player with touchscreen
+function keyPressed() {
+    // start and stop the player with spacebar
     if (key === " ") {
         if (!isPlaying) {
             initializeTone();
@@ -131,6 +131,21 @@ function touchStarted() {
             isPlaying = false;
         }
     }
+}
+
+function touchStarted() {
+    // start and stop the player with touchscreen
+     if (value === 0) {
+        if (!isPlaying) {
+            initializeTone();
+            player.start(1, loopStart);
+            isPlaying = true;
+        } else {
+            player.stop();
+            isPlaying = false;
+        }
+     }
+}
 
     // cycle through buffers and backgrounds with right or left arrow
     if (key === "ArrowRight") {
