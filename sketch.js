@@ -154,6 +154,20 @@ function keyPressed() {
     }
 }
 
+function touchStarted() {
+    // start and stop the player by touching
+    if (value === 0) {
+        if (!isPlaying) {
+            initializeTone();
+            player.start(1, loopStart);
+            isPlaying = true;
+        } else {
+            player.stop();
+            isPlaying = false;
+        }
+    }
+}
+
 function trackPad(event) {
     // if mousewheel or trackpad scrolls down, reduce the grain size
     if (event.wheelDeltaY > 10) {
