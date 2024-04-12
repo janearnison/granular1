@@ -86,6 +86,15 @@ function draw() {
     if (mouseY < height && mouseY > 0) {
         player.playbackRate = mouseY / (height / 2) + 0.05;
     }
+
+    
+    fill('magenta');
+
+    // for each touch, draw an ellipse at its location.
+    // touches are stored in array.
+    for (var i = 0; i < touches.length; i++) {
+      ellipse(touches[i].x, touches[i].y, 50, 50);
+    }
 }
 
 // do this prevent default touch interaction
@@ -96,7 +105,7 @@ function mousePressed() {
   document.addEventListener('gesturestart', function(e) {
     e.preventDefault();
   });
-  
+
 
 function getPressedPoint() {
     // Capture mouse pressed x and y
