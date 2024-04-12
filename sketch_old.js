@@ -28,9 +28,9 @@ function setup() {
     // Create canvas and attch mouse events with callbacks
     cnv = createCanvas(windowWidth, windowHeight);
     cnv.style('display', 'block');
-   // cnv.mousePressed(getPressedPoint);
-   // cnv.mouseReleased(getReleasePoint);
-  //  cnv.mouseWheel(trackPad);
+    cnv.mousePressed(getPressedPoint);
+    cnv.mouseReleased(getReleasePoint);
+    cnv.mouseWheel(trackPad);
     cnv.touchStarted(getPressedPoint);
     cnv.touchEnd(getPressedPoint);
     cnv.touchMoved(trackPad);
@@ -90,16 +90,16 @@ function draw() {
 
 function getPressedPoint() {
     // Capture mouse pressed x and y
-    pressedPoint = TouchX / width;
-    x1 = TouchX;
-    y1 = TouchY;
+    pressedPoint = mouseX / width;
+    x1 = mouseX;
+    y1 = mouseY;
 }
 
 function getReleasePoint() {
     // Capture mouse released x and y
-    releasePoint = TouchX / width;
-    x1 = TouchX;
-    y1 = TouchY;
+    releasePoint = mouseX / width;
+    x2 = mouseX;
+    y2 = mouseY;
     // Calculate loop start and end points
     calculateLoop();
 }
@@ -123,6 +123,20 @@ function calculateLoop() {
     }
     isPlaying = true;
 }
+
+function keyPressed() {
+    // start and stop the player with the space bar
+    if (key === " ") {
+        if (!isPlaying) {
+            initializeTone();
+            player.start(1, loopStart);
+            isPlaying = true;
+        } else {
+            player.stop();
+            isPlaying = false;
+        }
+    }
+
     // cycle through buffers and backgrounds with right or left arrow
     if (key === "ArrowRight") {
         bufferIndex = (bufferIndex + 1) % buffers.length;
@@ -143,7 +157,7 @@ function calculateLoop() {
             bgIndex = bgColors.length - 1;
         }
     }
-
+}
 
 function touchStarted() {
     // start and stop the player by touching
