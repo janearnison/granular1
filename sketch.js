@@ -88,6 +88,16 @@ function draw() {
     }
 }
 
+// do this prevent default touch interaction
+function mousePressed() {
+    return false;
+  }
+  
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  });
+  
+
 function getPressedPoint() {
     // Capture mouse pressed x and y
     pressedPoint = mouseX / width;
