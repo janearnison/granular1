@@ -4,6 +4,8 @@ let x1 = 0,
     x2 = 0,
     y1 = 0,
     y2 = 0;
+
+let value = 0
 const bgColors = [100, 150, 250];
 let bgIndex = 0;
 const buffers = [buffer1, buffer2, buffer3, buffer4, buffer5, buffer6, buffer7, buffer8, buffer9]; // Defined in buffers.js
@@ -33,7 +35,6 @@ function setup() {
     cnv.mouseWheel(trackPad);
     cnv.touchStarted(getPressedPoint);
    
-
 
 
     // Init settings for player
