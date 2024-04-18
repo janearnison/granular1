@@ -1,16 +1,14 @@
 // GRANULAR SYNTH MOUSE INTERACTION
 
 // Define Global Variables
+const audioCtx = new AudioContext();
 let cnv;
-let value = 0; 
 let x1 = 0,
     x2 = 0,
     y1 = 0,
     y2 = 0;
 
-const startBtn = document.getElementById('start-btn');
-const stopBtn = document.getElementById('stop-btn');
-
+let value = 0
 const bgColors = [100, 150, 250];
 let bgIndex = 0;
 const buffers = [buffer1, buffer2, buffer3, buffer4, buffer5, buffer6, buffer7, buffer8, buffer9]; // Defined in buffers.js
@@ -19,8 +17,8 @@ let loopStart, loopEnd, pressedPoint, releasePoint;
 let isPlaying = false;
 let grainSize = 0.1;
 let overlap = 0.1;
-let pointerX
-let pointerY
+let pointerX = 0
+let pointerY = 0
 
 // Instantiate Tone.GrainPlayer object
 const player = new Tone.GrainPlayer(buffers[bufferIndex]);
@@ -33,15 +31,6 @@ const reverb = new Tone.Reverb({
 });
 
 
-function startup() {
-    const el = document.getElementsByTagName("canvas")[0];
-    el.addEventListener("pointerdown", handleStart, false);
-    el.addEventListener("pointerup", handleEnd, false);
-    el.addEventListener("pointercancel", handleCancel, false);
-    el.addEventListener("pointermove", handleMove, false);
-    log("initialized.");
-  }
-
 function setup() {
     // Create canvas and attch mouse events with callbacks
     cnv = createCanvas(windowWidth, windowHeight);
@@ -49,13 +38,15 @@ function setup() {
     cnv.mousePressed(getPressedPoint);
     cnv.mouseReleased(getReleasePoint);
     cnv.mouseWheel(trackPad);
-   
 
-    // attach touch events with callbacks
 
-  
+    cnv.addEventListener("pointerdown", handleStart, false);
+    cnv.addEventListener("pointerup", handleEnd, false);
+    cnv.addEventListener("pointercancel", handleCancel, false);
+   cnv.addEventListener("pointermove", handleMove, false);
+    log("initialized.");
+}
 
-    
 
 
     // Init settings for player
@@ -68,7 +59,9 @@ function setup() {
 
     pressedPoint = 0;
     releasePoint = 1;
-}
+
+
+
 
 function draw() {
     // Draw background
@@ -131,7 +124,9 @@ function mousePressed() {
     return false;
   }
   
-
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  });
 
 
 function getPressedPoint() {
@@ -177,6 +172,28 @@ function calculateLoop() {
     isPlaying = true;
 }
 
+
+function pointerdown() {
+    // start and stop the player by pressing pointer (touching/mouseclick)
+    if (value === 1) {
+        if (!isPlaying) {
+            initializeTone();
+            player.start(1, loopStart);
+            isPlaying = true;
+        } else {
+            player.stop();
+            isPlaying = false;
+        }
+    }
+}
+
+function startAudioContext() {
+    if (audioContext.state === 'suspended') {
+        audioContext.resume(); 
+
+    }
+}
+
 function keyPressed() {
     // start and stop the player with the space bar
     if (key === " ") {
@@ -189,7 +206,6 @@ function keyPressed() {
             isPlaying = false;
         }
     }
-
 
     // cycle through buffers and backgrounds with right or left arrow
     if (key === "ArrowRight") {
@@ -213,19 +229,7 @@ function keyPressed() {
     }
 }
 
-function touchStarted() {
-    // start and stop the player by touch
-    if (value === 0) {
-        if (!isPlaying) {
-            initializeTone();
-            player.start(1, loopStart);
-            isPlaying = true;
-        } else {
-            player.stop();
-            isPlaying = false;
-        }
-    }
-}
+
 
 function trackPad(event) {
     // if mousewheel or trackpad scrolls down, reduce the grain size
@@ -242,23 +246,11 @@ function trackPad(event) {
     player.grainSize = grainSize;
 }
 
-function startAudioContext() {
-    if (audioContext.state === 'suspended') {
-        audioContext.resume(); 
-
-    }
-}
-
 async function initializeTone() {
-    await Tone.start();
+    await player.start();
     console.log("audio context started");
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
-
-window.addEventListener('load',function() {
-	/* hack to prevent firing the init script before the window object's values are populated */
-	setTimeout(init,100);
-},false);
