@@ -1,16 +1,11 @@
-// GRANULAR SYNTH MOUSE INTERACTION
-
 // Define Global Variables
 let cnv;
-let value = 0; 
 let x1 = 0,
     x2 = 0,
     y1 = 0,
     y2 = 0;
 
-const startBtn = document.getElementById('start-btn');
-const stopBtn = document.getElementById('stop-btn');
-
+let value = 0
 const bgColors = [100, 150, 250];
 let bgIndex = 0;
 const buffers = [buffer1, buffer2, buffer3, buffer4, buffer5, buffer6, buffer7, buffer8, buffer9]; // Defined in buffers.js
@@ -19,8 +14,6 @@ let loopStart, loopEnd, pressedPoint, releasePoint;
 let isPlaying = false;
 let grainSize = 0.1;
 let overlap = 0.1;
-let pointerX
-let pointerY
 
 // Instantiate Tone.GrainPlayer object
 const player = new Tone.GrainPlayer(buffers[bufferIndex]);
@@ -33,15 +26,6 @@ const reverb = new Tone.Reverb({
 });
 
 
-function startup() {
-    const el = document.getElementsByTagName("canvas")[0];
-    el.addEventListener("pointerdown", handleStart, false);
-    el.addEventListener("pointerup", handleEnd, false);
-    el.addEventListener("pointercancel", handleCancel, false);
-    el.addEventListener("pointermove", handleMove, false);
-    log("initialized.");
-  }
-
 function setup() {
     // Create canvas and attch mouse events with callbacks
     cnv = createCanvas(windowWidth, windowHeight);
@@ -49,13 +33,8 @@ function setup() {
     cnv.mousePressed(getPressedPoint);
     cnv.mouseReleased(getReleasePoint);
     cnv.mouseWheel(trackPad);
+    cnv.touchStarted(getPressedPoint);
    
-
-    // attach touch events with callbacks
-
-  
-
-    
 
 
     // Init settings for player
@@ -108,14 +87,6 @@ function draw() {
         player.playbackRate = mouseY / (height / 2) + 0.05;
     }
 
-      // Affect player's tune and rate with pointerX & Y var
-      if (pointerX < width && pointerY > 0) {
-        player.detune = (pointerX / (width / 4)) * 1200 - 2400;
-    }
-    if (pointerY < height && pointerY > 0) {
-        player.playbackRate = pointerY / (height / 2) + 0.05;
-    }
-
     
     fill('magenta');
 
@@ -131,7 +102,9 @@ function mousePressed() {
     return false;
   }
   
-
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  });
 
 
 function getPressedPoint() {
@@ -141,18 +114,11 @@ function getPressedPoint() {
     y1 = mouseY;
 }
 
-function getPressedPoint() {
-    // Capture pointer pressed x and y
-    pressedPoint = pointerX / width;
-    x1 = pointerX;
-    y1 = pointerY;
-}
-
 function getReleasePoint() {
     // Capture mouse released x and y
-    releasePoint = pointerX / width;
-    x2 = pointerX;
-    y2 = pointerY;
+    releasePoint = mouseX / width;
+    x2 = mouseX;
+    y2 = mouseY;
     // Calculate loop start and end points
     calculateLoop();
 }
@@ -190,7 +156,6 @@ function keyPressed() {
         }
     }
 
-
     // cycle through buffers and backgrounds with right or left arrow
     if (key === "ArrowRight") {
         bufferIndex = (bufferIndex + 1) % buffers.length;
@@ -214,7 +179,7 @@ function keyPressed() {
 }
 
 function touchStarted() {
-    // start and stop the player by touch
+    // start and stop the player by touching
     if (value === 0) {
         if (!isPlaying) {
             initializeTone();
@@ -242,13 +207,6 @@ function trackPad(event) {
     player.grainSize = grainSize;
 }
 
-function startAudioContext() {
-    if (audioContext.state === 'suspended') {
-        audioContext.resume(); 
-
-    }
-}
-
 async function initializeTone() {
     await Tone.start();
     console.log("audio context started");
@@ -257,8 +215,3 @@ async function initializeTone() {
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }
-
-window.addEventListener('load',function() {
-	/* hack to prevent firing the init script before the window object's values are populated */
-	setTimeout(init,100);
-},false);
